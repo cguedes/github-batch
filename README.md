@@ -1,6 +1,6 @@
 # GitHub batch
 
-This tool batches the creation of github repositories in the context of a organization.
+This tool batches the creation of github repositories and teams in the context of an organization.
 
 ## Usage
 
