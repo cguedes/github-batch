@@ -28,7 +28,7 @@ This tool batches the creation and removal of github repositories, and teams, in
     -o, --organization <value>  The GitHub organization
     -p, --prefix <value>        The team/repository prefix (e.g. 1314i-LI31D_LI51D)
     -a, --authToken <value>     A authorization token to use GitHub API
- `` 
+``` 
 
 
 ## Samples
