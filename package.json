@@ -1,6 +1,6 @@
 {
   "name": "GitHubBatch",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "GitHub command line batch",
   "main": "app.js",
   "scripts": {
@@ -16,6 +16,7 @@
     "request": "~2.27.0",
     "async": "~0.2.9",
     "linq": "~1.0.2",
-    "commander": "~2.0.0"
+    "commander": "~2.0.0",
+    "read": "~1.0.5"
   }
 }
