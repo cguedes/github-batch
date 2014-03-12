@@ -30,7 +30,10 @@ run(config);
 function run(config) {
     var async = require("async");
     var Enumerable = require("linq");
-    var request = require("request").defaults({ headers: { "Authorization": "token " + config.authToken }});
+    var request = require("request").defaults({ headers: { 
+        "Authorization": "token " + config.authToken,
+        "User-Agent": "GitHubBatch" 
+    }});
 
     var links = {
         forOrgRepositories: function(org)         { return "/orgs/" + org + "/repos"; },
