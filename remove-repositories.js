@@ -22,7 +22,7 @@ if(!program.organization || !program.prefix || !program.authToken)
 var config = {
     org: program.organization,
     authToken: program.authToken,
-    prefix: program.prefix,
+    prefix: program.prefix.toLowerCase(),
 }
 run(config);
 
@@ -49,6 +49,7 @@ function run(config) {
 
     async.series(
         [
+            getRepos, 
             getTeams, 
             checkIfIsToContinue,
             removeRepositories, 
@@ -61,24 +62,43 @@ function run(config) {
         }
     );
 
+    function getRepos(cb) {
+        console.log("Retrieving repos for organization " + config.org);
+        req("GET", links.forOrgRepositories(config.org), null, function(error, repos) {
+            if(error) return cb(error);
+            
+            config.repos = Enumerable
+							.From(repos)
+							.Where(function(r) { return r.name.toLowerCase().indexOf(config.prefix) == 0 })
+							.ToArray();
+            
+            return cb();
+        });
+    }
+	
     function getTeams(cb) {
         console.log("Retrieving teams for organization " + config.org);
         req("GET", links.forOrgTeams(config.org), null, function(error, teams) {
             if(error) return cb(error);
             
-            config.teams = Enumerable.From(teams).Where(function(t) { return t.slug.indexOf(config.prefix) == 0 }).ToArray();
-            console.log(config.teams);
-
+            config.teams = Enumerable
+							.From(teams)
+							.Where(function(t) { return t.slug.toLowerCase().indexOf(config.prefix) == 0 })
+							.ToArray();
+        
             return cb();
         });
     }
     
     function checkIfIsToContinue(cb) {
 
-        console.log("You will REMOVE the following repositories/teams:");
+        console.log("You will REMOVE the following repositories:");
+        Enumerable.From(config.repos).Select("r => '  -> ' + r.name").ForEach(console.log);
+
+		console.log("You will REMOVE the following teams:");
         Enumerable.From(config.teams).Select("t => '  -> ' + t.slug").ForEach(console.log);
 
-        var read = require("read");
+		var read = require("read");
         read({prompt: "Sure to remove those repositories? (yes|no)", default: "no" }, function(error, yesno) {
             if(error || yesno == "no") {
                 return cb("Execution aborted");
@@ -91,11 +111,10 @@ function run(config) {
     }
 
     function removeRepositories(cb) {
-        
-        async.each(
-            Enumerable.From(config.teams).Select("t => t.slug").ToArray(),
-            function(slug, cb) {
-                req("DELETE", links.forRepository(config.org, slug), null, cb);
+		async.each(
+            Enumerable.From(config.repos).Select("r => r.name").ToArray(),
+            function(name, cb) {
+                req("DELETE", links.forRepository(config.org, name), null, cb);
             },
             cb
         );
