@@ -50,7 +50,7 @@ function run(config) {
     var links = {
         forOrgRepositories: function(org)        { return "/orgs/" + org + "/repos"; },
         forOrgTeams:        function(org)        { return "/orgs/" + org + "/teams"; },
-        forTeamMember:      function(team, user) { return "/teams/" + team + "/members/" + user; },
+        forTeamMember:      function(team, user) { return "/teams/" + team + "/memberships/" + user; },
     }
 
     console.log("Running with the following configuration");
